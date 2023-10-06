@@ -13,6 +13,85 @@
 namespace inet {
 namespace tcp {
 
+enum TcpCongState_t
+{
+    CA_OPEN,     //!< Normal state, no dubious events
+    CA_DISORDER, //!< In all the respects it is "Open",
+                 //!< but requires a bit more attention. It is entered when we see some SACKs or
+                 //!< dupacks. It is split of "Open".
+    CA_CWR,      //!< cWnd was reduced due to some congestion notification event, such as ECN,
+                 //!< ICMP source quench, local device congestion.
+    CA_RECOVERY, //!< CWND was reduced, we are fast-retransmitting.
+    CA_LOSS,     //!< CWND was reduced due to RTO timeout or SACK reneging.
+    CA_LAST_STATE //!< Used only in debug messages
+};
+
+// Note: "not triggered" events are currently not triggered by the code.
+/**
+ * \brief Congestion avoidance events
+ */
+enum TcpCAEvent_t
+{
+    CA_EVENT_TX_START,        //!< first transmit when no packets in flight
+    CA_EVENT_CWND_RESTART,    //!< congestion window restart. Not triggered
+    CA_EVENT_COMPLETE_CWR,    //!< end of congestion recovery
+    CA_EVENT_LOSS,            //!< loss timeout
+    CA_EVENT_ECN_NO_CE,       //!< ECT set, but not CE marked. Not triggered
+    CA_EVENT_ECN_IS_CE,       //!< received CE marked IP packet. Not triggered
+    CA_EVENT_DELAYED_ACK,     //!< Delayed ack is sent
+    CA_EVENT_NON_DELAYED_ACK, //!< Non-delayed ack is sent
+};
+
+/**
+ * \brief Parameter value related to ECN enable/disable functionality
+ *        similar to sysctl for tcp_ecn. Currently value 2 from
+ *        https://www.kernel.org/doc/Documentation/networking/ip-sysctl.txt
+ *        is not implemented.
+ */
+enum UseEcn_t
+{
+    Off = 0,        //!< Disable
+    On = 1,         //!< Enable
+    AcceptOnly = 2, //!< Enable only when the peer endpoint is ECN capable
+};
+
+/**
+ * \brief ECN code points
+ */
+enum EcnCodePoint_t
+{
+    NotECT = 0,  //!< Unmarkable
+    Ect1 = 1,    //!< Markable
+    Ect0 = 2,    //!< Markable
+    CongExp = 3, //!< Marked
+};
+
+/**
+ * \brief ECN Modes
+ */
+enum EcnMode_t
+{
+    ClassicEcn, //!< ECN functionality as described in RFC 3168.
+    DctcpEcn,   //!< ECN functionality as described in RFC 8257. Note: this mode is specific to
+                //!< DCTCP.
+};
+
+/**
+ * \brief Definition of the Ecn state machine
+ *
+ */
+enum EcnState_t
+{
+    ECN_DISABLED = 0, //!< ECN disabled traffic
+    ECN_IDLE, //!< ECN is enabled  but currently there is no action pertaining to ECE or CWR to
+              //!< be taken
+    ECN_CE_RCVD,     //!< Last packet received had CE bit set in IP header
+    ECN_SENDING_ECE, //!< Receiver sends an ACK with ECE bit set in TCP header
+    ECN_ECE_RCVD,    //!< Last ACK received had ECE bit set in TCP header
+    ECN_CWR_SENT //!< Sender has reduced the congestion window, and sent a packet with CWR bit
+                 //!< set in TCP header. This state is used for tracing.
+};
+
 /**
  * Abstract base class for TCP algorithms which encapsulate all behaviour
  * during data transfer state: flavour of congestion control, fast
