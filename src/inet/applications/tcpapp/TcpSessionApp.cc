@@ -147,7 +147,7 @@ Packet *TcpSessionApp::createDataPacket(long sendBytes)
     const char *dataTransferMode = par("dataTransferMode");
     Ptr<Chunk> payload;
     if (!strcmp(dataTransferMode, "bytecount")) {
-        payload = makeShared<ByteCountChunk>(B(sendBytes));
+        payload = makeShared<ByteCountChunk>(B(sendBytes), 0);
     }
     else if (!strcmp(dataTransferMode, "object")) {
         const auto& applicationPacket = makeShared<ApplicationPacket>();
