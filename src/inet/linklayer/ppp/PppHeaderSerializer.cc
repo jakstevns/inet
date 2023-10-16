@@ -18,18 +18,18 @@ Register_Serializer(PppTrailer, PppTrailerSerializer);
 void PppHeaderSerializer::serialize(MemoryOutputStream& stream, const Ptr<const Chunk>& chunk) const
 {
     const auto& pppHeader = staticPtrCast<const PppHeader>(chunk);
-    stream.writeUint8(pppHeader->getFlag());
-    stream.writeUint8(pppHeader->getAddress());
-    stream.writeUint8(pppHeader->getControl());
+//    stream.writeUint8(pppHeader->getFlag());
+//    stream.writeUint8(pppHeader->getAddress());
+//    stream.writeUint8(pppHeader->getControl());
     stream.writeUint16Be(pppHeader->getProtocol());
 }
 
 const Ptr<Chunk> PppHeaderSerializer::deserialize(MemoryInputStream& stream) const
 {
     auto pppHeader = makeShared<PppHeader>();
-    pppHeader->setFlag(stream.readUint8());
-    pppHeader->setAddress(stream.readUint8());
-    pppHeader->setControl(stream.readUint8());
+//    pppHeader->setFlag(stream.readUint8());
+//    pppHeader->setAddress(stream.readUint8());
+//    pppHeader->setControl(stream.readUint8());
     pppHeader->setProtocol(stream.readUint16Be());
     return pppHeader;
 }
