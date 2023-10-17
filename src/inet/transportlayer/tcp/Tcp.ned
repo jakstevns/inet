@@ -174,6 +174,7 @@ simple Tcp like ITcp
         double dctcpGamma = default(0.0625); // A fixed estimation gain for calculating dctcp_alpha (RFC 8257 4.2)
         double rto_min @unit(s) = default(1s); // MIN_REXMIT_TIMEOUT
         double rto_max @unit(s) = default(240s); // MIN_REXMIT_TIMEOUT
+        int maxRexmitCount = default(12);
         bool sendDataWithFirstAck = default(true); // send data in 3rd packet in SYN - SYN+ACK - ACK sequence
         bool alignOptions = default(true);  // enable/disable per-option predefined alignment
         @display("i=block/wheelbarrow");
