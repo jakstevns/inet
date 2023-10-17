@@ -1265,9 +1265,9 @@ TcpHeader TcpConnection::writeHeaderOptions(const Ptr<TcpHeader>& tcpHeader)
     {
         // MSS header option
         if (state->snd_mss > 0) {
-//            TcpOptionMaxSegmentSize *option = new TcpOptionMaxSegmentSize();
-//            option->setMaxSegmentSize(state->snd_mss);
-//            tcpHeader->appendHeaderOption(option);
+            TcpOptionMaxSegmentSize *option = new TcpOptionMaxSegmentSize();
+            option->setMaxSegmentSize(state->snd_mss);
+            tcpHeader->appendHeaderOption(option);
             EV_INFO << "Tcp Header Option MSS(=" << state->snd_mss << ") sent\n";
         }
 
