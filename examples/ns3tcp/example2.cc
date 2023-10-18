@@ -152,7 +152,7 @@ int main(int argc, char *argv[]) {
   Simulator::Schedule(MilliSeconds(1), &TraceCwnd, 0);
 
   // Enable Pcap tracing
-  p2p1.EnablePcapAll("simulation");
+  p2p1.EnablePcapAll("example2");
 
   // Run simulation
   Simulator::Run();

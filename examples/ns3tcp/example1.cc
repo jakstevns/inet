@@ -53,7 +53,7 @@ int main (int argc, char *argv[])
   sinkApps.Start (Seconds (0.0));
   sinkApps.Stop (Seconds (10.0));
 
-  pointToPoint.EnablePcapAll ("tcp-p2p");
+  pointToPoint.EnablePcapAll ("example1");
 
   Simulator::Run ();
   Simulator::Destroy ();

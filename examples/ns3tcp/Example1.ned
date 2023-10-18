@@ -18,7 +18,7 @@ package inet.examples.ns3tcp;
 import inet.networks.base.WiredNetworkBase;
 import inet.node.inet.StandardHost;
 
-network Example1 extends WiredNetworkBase
+network example1 extends WiredNetworkBase
 {
     submodules:
         source: StandardHost;
