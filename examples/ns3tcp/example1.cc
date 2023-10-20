@@ -10,6 +10,8 @@ using namespace ns3;
 
 int main (int argc, char *argv[])
 {
+  Time::SetResolution (Time::PS);
+
   NodeContainer nodes;
   nodes.Create (2);
 
@@ -26,6 +28,7 @@ int main (int argc, char *argv[])
   Config::SetDefault ("ns3::TcpSocket::InitialCwnd", UintegerValue (1));
   Config::SetDefault ("ns3::TcpSocket::DelAckCount", UintegerValue (1));
   Config::SetDefault ("ns3::TcpL4Protocol::SocketType", StringValue ("ns3::TcpNewReno"));
+  Config::SetDefault ("ns3::PcapFileWrapper::NanosecMode", ns3::BooleanValue (true));
 
   NetDeviceContainer devices;
   devices = pointToPoint.Install (nodes);

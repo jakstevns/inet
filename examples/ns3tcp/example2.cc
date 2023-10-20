@@ -36,13 +36,13 @@ RxBegin (Ptr<const Packet> p)
 void
 RxEnd (Ptr<const Packet> p)
 {
-  NS_LOG_UNCOND ("Reception end at " << std::setprecision(15) << Simulator::Now ().GetSeconds ());
+  NS_LOG_UNCOND ("TRACE RxEnd " << std::setprecision(15) << Simulator::Now ().GetSeconds ());
 }
 
 void
 TxBegin (Ptr<const Packet> p)
 {
-  NS_LOG_UNCOND ("Transmission start at " << std::setprecision(15) << Simulator::Now ().GetSeconds ());
+  NS_LOG_UNCOND ("TRACE TxBegin " << std::setprecision(15) << Simulator::Now ().GetSeconds ());
 }
 
 void
@@ -70,13 +70,13 @@ TcQueueTrace (uint32_t oldValue, uint32_t newValue)
 
 int main(int argc, char *argv[]) {
 //  LogComponentEnableAll(LOG_LEVEL_INFO);
+  Time::SetResolution (Time::PS);
 
   // Create Nodes
   NodeContainer nodes;
   nodes.Create(3);
 
   GlobalValue::Bind ("ChecksumEnabled", BooleanValue (true));
-
 
   Config::SetDefault ("ns3::TcpSocketBase::Sack", BooleanValue (false));
   Config::SetDefault ("ns3::TcpSocketBase::Timestamp", BooleanValue (false));
@@ -86,6 +86,7 @@ int main(int argc, char *argv[]) {
   Config::SetDefault ("ns3::TcpSocket::DelAckCount", UintegerValue (1));
   Config::SetDefault ("ns3::TcpL4Protocol::SocketType", StringValue ("ns3::TcpNewReno"));
   Config::SetDefault("ns3::TcpL4Protocol::RecoveryType", TypeIdValue(TypeId::LookupByName("ns3::TcpClassicRecovery")));
+  Config::SetDefault ("ns3::PcapFileWrapper::NanosecMode", ns3::BooleanValue (true));
 
   // Point-to-Point setup
   PointToPointHelper p2p1, p2p2;
