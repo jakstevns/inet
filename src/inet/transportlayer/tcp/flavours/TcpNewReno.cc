@@ -265,6 +265,7 @@ void TcpNewReno::receivedDuplicateAck()
             if (state->snd_una - 1 > state->recover) {
                 EV_INFO << "NewReno on dupAcks == DUPTHRESH(=" << state->dupthresh << ": perform Fast Retransmit, and enter Fast Recovery:";
 
+                conn->retransmitOneSegment(false);
                 // RFC 3782, page 4:
                 // "1A) Invoking Fast Retransmit:
                 // If so, then set ssthresh to no more than the value given in
@@ -289,7 +290,6 @@ void TcpNewReno::receivedDuplicateAck()
                 conn->emit(cwndSignal, state->snd_cwnd);
 
                 EV_DETAIL << " , cwnd=" << state->snd_cwnd << ", ssthresh=" << state->ssthresh << "\n";
-                conn->retransmitOneSegment(false);
 
                 // RFC 3782, page 5:
                 // "4) Fast Recovery, continued:
