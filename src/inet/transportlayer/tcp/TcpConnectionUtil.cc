@@ -1446,6 +1446,10 @@ uint32_t TcpConnection::getTSecr(const Ptr<const TcpHeader>& tcpHeader) const
     return 0;
 }
 
+uint32_t TcpConnection::getBytesInFlight() const
+{
+}
+
 void TcpConnection::updateRcvQueueVars()
 {
     // update receive queue related state variables
