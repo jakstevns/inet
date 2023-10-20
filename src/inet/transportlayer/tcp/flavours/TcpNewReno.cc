@@ -158,17 +158,17 @@ void TcpNewReno::receivedDataAck(uint32_t firstSeqAcked)
             conn->retransmitOneSegment(false);
 
             // deflate cwnd by amount of new data acknowledged by cumulative acknowledgement field
-            state->snd_cwnd -= state->snd_una - firstSeqAcked;
+//             state->snd_cwnd -= state->snd_una - firstSeqAcked;
 
-            conn->emit(cwndSignal, state->snd_cwnd);
+//            conn->emit(cwndSignal, state->snd_cwnd);
 
             EV_INFO << "Fast Recovery: deflating cwnd by amount of new data acknowledged, new cwnd=" << state->snd_cwnd << "\n";
 
             // if the partial ACK acknowledges at least one SMSS of new data, then add back SMSS bytes to the cwnd
             if (state->snd_una - firstSeqAcked >= state->snd_mss) {
-                state->snd_cwnd += state->snd_mss;
-
-                conn->emit(cwndSignal, state->snd_cwnd);
+//                state->snd_cwnd += state->snd_mss;
+//
+//                conn->emit(cwndSignal, state->snd_cwnd);
 
                 EV_DETAIL << "Fast Recovery: inflating cwnd by SMSS, new cwnd=" << state->snd_cwnd << "\n";
             }
@@ -290,7 +290,7 @@ void TcpNewReno::receivedDuplicateAck()
                 // This artificially "inflates" the congestion window by the number
                 // of segments (three) that have left the network and the receiver
                 // has buffered."
-                state->snd_cwnd = state->ssthresh + 3 * state->snd_mss;
+                state->snd_cwnd = state->ssthresh; // + 3 * state->snd_mss;
 
                 conn->emit(cwndSignal, state->snd_cwnd);
 
@@ -324,11 +324,11 @@ void TcpNewReno::receivedDuplicateAck()
             // Recovery, increment cwnd by SMSS.  This artificially inflates the
             // congestion window in order to reflect the additional segment that
             // has left the network."
-            state->snd_cwnd += state->snd_mss;
-
-            conn->emit(cwndSignal, state->snd_cwnd);
-
-            EV_DETAIL << "NewReno on dupAcks > DUPTHRESH(=" << state->dupthresh << ": Fast Recovery: inflating cwnd by SMSS, new cwnd=" << state->snd_cwnd << "\n";
+//            state->snd_cwnd += state->snd_mss;
+//
+//            conn->emit(cwndSignal, state->snd_cwnd);
+//
+//            EV_DETAIL << "NewReno on dupAcks > DUPTHRESH(=" << state->dupthresh << ": Fast Recovery: inflating cwnd by SMSS, new cwnd=" << state->snd_cwnd << "\n";
 
             // RFC 3782, page 5:
             // "4) Fast Recovery, continued:

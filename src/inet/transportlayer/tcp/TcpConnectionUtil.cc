@@ -1492,6 +1492,9 @@ uint16_t TcpConnection::updateRcvWnd()
 
     state->rcv_wnd = win;
 
+    if (state->rcv_wnd > 65535)
+        state->rcv_wnd = 131072;
+
     emit(rcvWndSignal, state->rcv_wnd);
 
     // scale rcv_wnd:
@@ -1502,6 +1505,9 @@ uint16_t TcpConnection::updateRcvWnd()
     }
 
     ASSERT(scaled_rcv_wnd == (uint16_t)scaled_rcv_wnd);
+
+    if (state->rcv_wnd == 130000)
+        std::cout << "";
 
     return (uint16_t)scaled_rcv_wnd;
 }
