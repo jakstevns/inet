@@ -160,6 +160,8 @@ class INET_API TcpSackRexmitQueue
      */
     virtual void checkSackBlock(uint32_t seqNum, uint32_t& length, bool& sacked, bool& rexmitted) const;
 
+    virtual uint32_t getRetrans() const;
+
   protected:
     /*
      * Returns if TcpSackRexmitQueue is valid or not.
