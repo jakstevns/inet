@@ -10,6 +10,7 @@
 #include <algorithm> // min,max
 
 #include "inet/transportlayer/tcp/Tcp.h"
+#include "inet/transportlayer/tcp/TcpSendQueue.h"
 
 namespace inet {
 namespace tcp {
@@ -248,6 +249,9 @@ void TcpNewReno::receivedDuplicateAck()
     TcpTahoeRenoFamily::receivedDuplicateAck();
 
     if (state->dupacks == state->dupthresh) {
+        auto sendQueue = conn->getSendQueueForUpdate();
+        sendQueue->sackedOut = 3 * state->snd_mss;
+        sendQueue->lostOut = state->snd_mss;
         if (!state->lossRecovery) {
             // RFC 3782, page 4:
             // "1) Three duplicate ACKs:
@@ -281,11 +285,7 @@ void TcpNewReno::receivedDuplicateAck()
 
                 // RFC 3782, page 4:
                 // "2) Entering Fast Retransmit:
-                // Retransmit the lost segment and set cwnd to ssthresh plus 3 * SMSS.
-                // This artificially "inflates" the congestion window by the number
-                // of segments (three) that have left the network and the receiver
-                // has buffered."
-                state->snd_cwnd = state->ssthresh + 3 * state->snd_mss;
+                state->snd_cwnd = state->ssthresh;
 
                 conn->emit(cwndSignal, state->snd_cwnd);
 
@@ -311,19 +311,9 @@ void TcpNewReno::receivedDuplicateAck()
         EV_INFO << "NewReno on dupAcks == DUPTHRESH(=" << state->dupthresh << ": TCP is already in Fast Recovery procedure\n";
     }
     else if (state->dupacks > state->dupthresh) {
+        auto sendQueue = conn->getSendQueueForUpdate();
+        sendQueue->sackedOut += state->snd_mss;
         if (state->lossRecovery) {
-            // RFC 3782, page 4:
-            // "3) Fast Recovery:
-            // For each additional duplicate ACK received while in Fast
-            // Recovery, increment cwnd by SMSS.  This artificially inflates the
-            // congestion window in order to reflect the additional segment that
-            // has left the network."
-            state->snd_cwnd += state->snd_mss;
-
-            conn->emit(cwndSignal, state->snd_cwnd);
-
-            EV_DETAIL << "NewReno on dupAcks > DUPTHRESH(=" << state->dupthresh << ": Fast Recovery: inflating cwnd by SMSS, new cwnd=" << state->snd_cwnd << "\n";
-
             // RFC 3782, page 5:
             // "4) Fast Recovery, continued:
             // Transmit a segment, if allowed by the new value of cwnd and the
