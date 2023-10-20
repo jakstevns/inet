@@ -955,7 +955,7 @@ TcpEventCode TcpConnection::processSegmentInSynSent(Packet *tcpSegment, const Pt
             state->snd_una = tcpHeader->getAckNo();
             sendQueue->discardUpTo(state->snd_una);
 
-            if (state->sack_enabled)
+//            if (state->sack_enabled)
                 rexmitQueue->discardUpTo(state->snd_una);
 
             // although not mentioned in RFC 793, seems like we have to pick up
@@ -1111,7 +1111,7 @@ TcpEventCode TcpConnection::processRstInSynReceived(const Ptr<const TcpHeader>& 
 
     sendQueue->discardUpTo(sendQueue->getBufferEndSeq()); // flush send queue
 
-    if (state->sack_enabled)
+//    if (state->sack_enabled)
         rexmitQueue->discardUpTo(rexmitQueue->getBufferEndSeq()); // flush rexmit queue
 
     if (state->active) {
@@ -1238,7 +1238,7 @@ bool TcpConnection::processAckInEstabEtc(Packet *tcpSegment, const Ptr<const Tcp
         sendQueue->discardUpTo(discardUpToSeq);
 
         // acked data no longer needed in rexmit queue
-        if (state->sack_enabled)
+//        if (state->sack_enabled)
             rexmitQueue->discardUpTo(discardUpToSeq);
 
         updateWndInfo(tcpHeader);
