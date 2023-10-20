@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: LGPL-3.0-or-later
 //
 
+#include <iomanip>
 #include <assert.h>
 #include <string.h>
 
@@ -16,6 +17,7 @@
 #include "inet/transportlayer/tcp/TcpSackRexmitQueue.h"
 #include "inet/transportlayer/tcp/TcpSendQueue.h"
 #include "inet/transportlayer/tcp_common/TcpHeader.h"
+#include "inet/transportlayer/tcp/flavours/TcpTahoeRenoFamilyState_m.h"
 
 namespace inet {
 namespace tcp {
@@ -188,6 +190,9 @@ bool TcpConnection::processTCPSegment(Packet *tcpSegment, const Ptr<const TcpHea
 {
     Enter_Method("processTCPSegment");
 
+    auto s = check_and_cast<TcpTahoeRenoFamilyStateVariables *>(state);
+    std::cout << std::setprecision(15) << "TRACE ProcessSegment enter time: " << simTime() << ", ssthresh: " << s->ssthresh << ", cwnd: " << s->snd_cwnd << std::endl;
+
     take(tcpSegment);
     printConnBrief();
     if (!localAddr.isUnspecified()) {
@@ -207,7 +212,11 @@ bool TcpConnection::processTCPSegment(Packet *tcpSegment, const Ptr<const TcpHea
     TcpEventCode event = process_RCV_SEGMENT(tcpSegment, tcpHeader, segSrcAddr, segDestAddr);
 
     // then state transitions
-    return performStateTransition(event);
+    auto r = performStateTransition(event);
+
+    std::cout << std::setprecision(15) << "TRACE ProcessSegment exit time: " << simTime() << ", ssthresh: " << s->ssthresh << ", cwnd: " << s->snd_cwnd << std::endl;
+
+    return r;
 }
 
 bool TcpConnection::processAppCommand(cMessage *msg)

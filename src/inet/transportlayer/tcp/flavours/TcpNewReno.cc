@@ -6,6 +6,7 @@
 
 #include "inet/transportlayer/tcp/flavours/TcpNewReno.h"
 
+#include <iomanip>
 #include <algorithm> // min,max
 
 #include "inet/transportlayer/tcp/Tcp.h"
@@ -248,6 +249,8 @@ void TcpNewReno::receivedDataAck(uint32_t firstSeqAcked)
 
 void TcpNewReno::receivedDuplicateAck()
 {
+    std::cout << std::setprecision(15) << "TRACE DupAck time: " << simTime() << ", ssthresh: " << state->ssthresh << ", cwnd: " << state->snd_cwnd << std::endl;
+
     TcpTahoeRenoFamily::receivedDuplicateAck();
 
     if (state->dupacks == state->dupthresh) {
