@@ -30,6 +30,11 @@ class INET_API TcpSendQueue : public cObject
     ChunkQueue dataBuffer; // dataBuffer
 
   public:
+    uint32_t lostOut = 0;   // Number of lost bytes
+    uint32_t sackedOut = 0; // Number of sacked bytes
+    uint32_t retrans = 0;   // Number of retransmitted bytes
+
+  public:
     /**
      * Ctor
      */

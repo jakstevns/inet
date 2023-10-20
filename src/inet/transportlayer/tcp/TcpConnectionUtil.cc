@@ -1448,6 +1448,11 @@ uint32_t TcpConnection::getTSecr(const Ptr<const TcpHeader>& tcpHeader) const
 
 uint32_t TcpConnection::getBytesInFlight() const
 {
+    uint32_t sentSize = state->snd_max - state->snd_una;
+    uint32_t in_flight = sentSize - sendQueue->sackedOut - sendQueue->lostOut + rexmitQueue->getRetrans();
+    std::cout << "TRACE XXX inFlight: " << in_flight << ", sentSize: " << sentSize << ", sackedOut: " << sendQueue->sackedOut << ", lostOut: " << sendQueue->lostOut << ", retrans: " << rexmitQueue->getRetrans() << std::endl;
+    return in_flight;
+//    return state->snd_wnd - sendQueue->sackedOut - sendQueue->lostOut + sendQueue->retrans;
 }
 
 void TcpConnection::updateRcvQueueVars()
