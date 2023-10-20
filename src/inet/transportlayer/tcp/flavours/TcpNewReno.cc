@@ -117,14 +117,20 @@ void TcpNewReno::receivedDataAck(uint32_t firstSeqAcked)
             // Exit Fast Recovery: deflating cwnd
             //
             // option (1): set cwnd to min (ssthresh, FlightSize + SMSS)
-            uint32_t flight_size = state->snd_max - state->snd_una;
-            state->snd_cwnd = std::min(state->ssthresh, flight_size + state->snd_mss);
+//            uint32_t flight_size = state->snd_max - state->snd_una;
+//            state->snd_cwnd = std::min(state->ssthresh, flight_size + state->snd_mss);
+            uint32_t incr = state->snd_mss * state->snd_mss / state->snd_cwnd;
+
+            if (incr == 0)
+                incr = 1;
+
+            state->snd_cwnd += incr;
             EV_INFO << "Fast Recovery - Full ACK received: Exit Fast Recovery, setting cwnd to " << state->snd_cwnd << "\n";
             // option (2): set cwnd to ssthresh
 //            state->snd_cwnd = state->ssthresh;
 //            tcpEV << "Fast Recovery - Full ACK received: Exit Fast Recovery, setting cwnd to ssthresh=" << state->ssthresh << "\n";
             // TODO - If the second option (2) is selected, take measures to avoid a possible burst of data (maxburst)!
-            conn->emit(cwndSignal, state->snd_cwnd);
+//            conn->emit(cwndSignal, state->snd_cwnd);
 
             state->lossRecovery = false;
             state->firstPartialACK = false;
