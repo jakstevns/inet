@@ -276,6 +276,7 @@ void Gptp::sendFollowUp(int portId, const GptpSync *sync, clocktime_t preciseOri
          *******************************************************************************************/
         // gptp->setCorrectionField(correctionField + peerDelay + sentTimeSyncSync - receivedTimeSync);  // TODO revise it!!! see prev. comment, where is the (1-f),  ???
         gptp->setCorrectionField(CLOCKTIME_ZERO);  // TODO revise it!!! see prev. comment, where is the (1-f),  ???
+        // TODO i think (1-f ) is Current cumulative Rate Ratioer r(i) ,r(i) = r(i-1) *nr(i) 
     }
     gptp->getFollowUpInformationTLVForUpdate().setRateRatio(gmRateRatio);
     packet->insertAtFront(gptp);
